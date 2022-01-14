@@ -6,16 +6,18 @@ import { prisma } from '../../../../database/PrismaClient';
 import { ICreateDeliverymanDTO } from '../../dtos/ICreateDeliverymanDTO';
 
 export class CreateDeliverymanService {
-  async execute({
-    username,
-    password,
-  }: ICreateDeliverymanDTO): Promise<DeliveryMan> {
+  async execute({ username, password }: ICreateDeliverymanDTO) {
     // Validates if the DeliveryMan exists
-    const deliveryManExists = await prisma.deliveryMan.findUnique({
+    const deliveryManExists = await prisma.deliveryMan.findFirst({
       where: {
-        username,
+        username: {
+          equals: username,
+          mode: 'insensitive',
+        },
       },
     });
+
+    console.log(deliveryManExists);
 
     if (deliveryManExists) {
       throw new Error('Client already exists.');
@@ -29,6 +31,10 @@ export class CreateDeliverymanService {
       data: {
         username,
         password: hashPassword,
+      },
+      select: {
+        id: true,
+        username: true,
       },
     });
 

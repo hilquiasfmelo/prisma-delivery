@@ -6,13 +6,18 @@ import { prisma } from '../../../../database/PrismaClient';
 import { ICreateClientDTO } from '../../dtos/ICreateClientDTO';
 
 export class CreateClientService {
-  async execute({ username, password }: ICreateClientDTO): Promise<Clients> {
+  async execute({ username, password }: ICreateClientDTO) {
     // Validates if the client exists
-    const clientExists = await prisma.clients.findUnique({
+    const clientExists = await prisma.clients.findFirst({
       where: {
-        username,
+        username: {
+          equals: username,
+          mode: 'insensitive',
+        },
       },
     });
+
+    console.log(clientExists);
 
     if (clientExists) {
       throw new Error('Client already exists.');
@@ -26,6 +31,10 @@ export class CreateClientService {
       data: {
         username,
         password: hashPassword,
+      },
+      select: {
+        id: true,
+        username: true,
       },
     });
 
