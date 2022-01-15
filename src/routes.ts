@@ -6,12 +6,13 @@ import { CreateClientController } from "./modules/clients/services/CreateClient/
 import { CreateDeliverymanController } from "./modules/deliveryman/services/CreateDeliveryman/CreateDeliverymanController";
 import { CreateDeliveryController } from "./modules/devileries/services/CreateDelivery/CreateDeliveryController";
 import { FindAllDeliveryAvailableController } from "./modules/devileries/services/FindAllDeliveryAvailable/FindAllDeliveryAvailableController";
-import { UpdateDeliveryToDeliverymanController } from "./modules/devileries/services/updateDeliveryToDeliveryman/UpdateDeliveryToDeliverymanController";
 import { FindAllDeliveriesController } from "./modules/clients/services/FindAllDeliveries/FindAllDeliveriesController";
+import { FindAllDeliveriesDeliverymanController } from "./modules/deliveryman/services/FindAllDeliveries/FindAllDeliveriesDeliverymanController";
+import { UpdateDeliveryToDeliverymanController } from "./modules/devileries/services/updateDeliveryToDeliveryman/UpdateDeliveryToDeliverymanController";
 
 import { ensureAuthenticateClient } from "./middlewares/EnsureAuthenticateClient";
 import { ensureAuthenticateDeliveryman } from "./middlewares/EnsureAuthenticateDeliveryman";
-import { FindAllDeliveriesDeliverymanController } from "./modules/deliveryman/services/FindAllDeliveries/FindAllDeliveriesDeliverymanController";
+import { UpdatedEndAtToFinishedController } from "./modules/devileries/services/UpdatedEndAtToFinished/UpdatedEndAtToFinishedController";
 
 export const router = Router();
 
@@ -22,7 +23,7 @@ router.post(
   new AuthenticateDeliverymanController().handle
 );
 
-// Routes Normal
+// Routes of Creations
 router.post("/client", new CreateClientController().handle);
 router.post("/deliveryman", new CreateDeliverymanController().handle);
 
@@ -55,4 +56,9 @@ router.put(
   "/delivery/updateDeliveryman/:id",
   ensureAuthenticateDeliveryman,
   new UpdateDeliveryToDeliverymanController().handle
+);
+router.put(
+  "/delivery/updateEndDate/:id",
+  ensureAuthenticateDeliveryman,
+  new UpdatedEndAtToFinishedController().handle
 );
